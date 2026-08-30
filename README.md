@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # IELTS Beta
 
 ## Project setup (Phase 2)
@@ -588,3 +589,6 @@ After `mvn verify`, open `backend/target/site/jacoco/index.html` in a browser fo
 
 1. **Admin/Teacher accounts unreachable.** Self-registration always creates a Student (by design — see Phase 4 notes above), and promoting someone to Teacher/Admin requires an existing Admin account via `PUT /api/admin/users/{id}/role`. If you've only ever used the app's own signup, there is no Admin yet, so nothing can be promoted. `supabase/bootstrap_admin.sql` is a ready-to-run script for this one-time bootstrap step (register as Student first with the email you want as Admin, then run the script). After that, use the in-app Admin Users page for every future promotion — never touch SQL again.
 2. **Student "profile settings" did nothing.** The profile page only ever displayed data — there was no backend endpoint or UI form to actually change it. Added `PUT /api/me` (`AuthService.updateProfile`, works for any role since the name lives on the shared `Person` row) and turned `student/profile/page.tsx` into a real edit form.
+=======
+# IELTS-Beta-Web
+>>>>>>> 024ee033d94340f3297208c215aea33687b31960
