@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Spring Boot parent -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <!-- Project information -->
+    <groupId>com.ieltsbeta</groupId>
+    <artifactId>ieltsbeta-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>ieltsbeta-backend</name>
+    <description>IELTS Beta backend (Spring Boot + Supabase Postgres)</description>
+
+    <!-- Java version -->
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <!-- ========================= -->
+    <!-- DEPENDENCIES               -->
+    <!-- ========================= -->
+    <dependencies>
+
+        <!-- REST API -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Database access -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- PostgreSQL driver (Supabase) -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Bean validation for DTOs -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- OAuth2 Resource Server for Supabase JWT -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
+        </dependency>
+
+        <!-- JWT / JOSE support -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
+
+        <!-- ========================= -->
+        <!-- JUNIT 5 + MOCKITO TESTING -->
+        <!-- ========================= -->
+
+        <!--
+            Spring Boot Starter Test provides:
+            - JUnit 5 / JUnit Jupiter
+            - Mockito
+            - AssertJ
+            - Spring Test
+            - Hamcrest
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--
+            Spring Security testing utilities.
+
+            Used for controller tests such as:
+            .with(jwt())
+            @WithMockUser
+        -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ========================= -->
+    <!-- BUILD CONFIGURATION        -->
+    <!-- ========================= -->
+    <build>
+
+        <plugins>
+
+            <!-- ========================= -->
+            <!-- SPRING BOOT MAVEN PLUGIN   -->
+            <!-- ========================= -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+
+            <!-- ========================= -->
+            <!-- JACOCO CODE COVERAGE       -->
+            <!-- ========================= -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+
+                <executions>
+
+                    <!--
+                        1. Attach JaCoCo agent before tests run.
+                    -->
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+
+                    <!--
+                        2. Generate the JaCoCo coverage report.
+
+                        Report will be available at:
+
+                        backend/target/site/jacoco/index.html
+                    -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+
+
+                    <!--
+                        3. Check minimum coverage during
+                           the Maven verify phase.
+                    -->
+                    <execution>
+                        <id>check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+
+                        <configuration>
+
+                            <!--
+                                These are not counted toward the
+                                backend logic coverage requirement.
+                            -->
+                            <excludes>
+                                <exclude>com/ieltsbeta/dto/**</exclude>
+                                <exclude>com/ieltsbeta/entity/**</exclude>
+                                <exclude>com/ieltsbeta/config/**</exclude>
+                                <exclude>com/ieltsbeta/IeltsBetaApplication.class</exclude>
+                            </excludes>
+
+                            <!-- Coverage rules -->
+                            <rules>
+
+                                <rule>
+
+                                    <!-- Check the complete backend bundle -->
+                                    <element>BUNDLE</element>
+
+                                    <limits>
+
+                                        <!--
+                                            REQUIREMENT:
+                                            At least 50% LINE coverage.
+                                        -->
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.50</minimum>
+                                        </limit>
+
+                                        <!--
+                                            REQUIREMENT:
+                                            At least 50% BRANCH coverage.
+                                        -->
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.50</minimum>
+                                        </limit>
+
+                                    </limits>
+
+                                </rule>
+
+                            </rules>
+
+                        </configuration>
+                    </execution>
+
+                </executions>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

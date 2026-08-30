@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: ieltsbeta-backend
+
+  # Phase 3: real Supabase Postgres connection.
+  # These env vars must be set before `mvn spring-boot:run` (see backend/.env.example
+  # and the "Set environment variables" step in the Phase 3 instructions).
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      # Entities now exist (Person/AppUser/Student, for auth), but ddl-auto
+      # stays "none" -- Hibernate must never create/alter tables.
+      # supabase/schema.sql is the single source of truth for the schema.
+      ddl-auto: none
+    open-in-view: false
+    show-sql: false
+
+server:
+  port: 8080
+
+# Phase 4: Supabase Auth JWT verification
+supabase:
+  url: ${SUPABASE_URL}
+  jwt-secret: ${SUPABASE_JWT_SECRET}
